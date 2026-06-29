@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/homeFragment">
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.riz.hyperlocalreport.ui.home.HomeFragment"
+        android:label="Home" />
+
+    <fragment
+        android:id="@+id/mapFragment"
+        android:name="com.riz.hyperlocalreport.ui.map.MapFragment"
+        android:label="Map" />
+
+    <fragment
+        android:id="@+id/historyFragment"
+        android:name="com.riz.hyperlocalreport.ui.history.HistoryFragment"
+        android:label="History" />
+
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.riz.hyperlocalreport.ui.profile.ProfileFragment"
+        android:label="Profile" />
+
+    <fragment
+        android:id="@+id/adminDashboardFragment"
+        android:name="com.riz.hyperlocalreport.ui.admin.AdminDashboardFragment"
+        android:label="Dashboard" />
+
+</navigation>
