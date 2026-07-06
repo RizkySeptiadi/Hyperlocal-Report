@@ -10,5 +10,6 @@ data class User(
     val role: String,
     val areaId: String,
     val fcmToken: String?,
+    val profileImageUrl: String?,
     val createdAt: Date?
 )

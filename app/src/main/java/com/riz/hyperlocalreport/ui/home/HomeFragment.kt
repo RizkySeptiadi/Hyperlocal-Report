@@ -12,6 +12,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.material.chip.Chip
 import com.riz.hyperlocalreport.AppContainer
 import com.riz.hyperlocalreport.HyperLocalReportApp
@@ -67,8 +68,10 @@ class HomeFragment : Fragment() {
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.userName.collectLatest { name ->
-                binding.tvGreeting.text = "Halo, $name 👋"
+            viewLifecycleOwner.repeatOnLifecycle(androidx.lifecycle.Lifecycle.State.STARTED) {
+                viewModel.userName.collectLatest { name ->
+                    binding.tvGreeting.text = "Halo, $name 👋"
+                }
             }
         }
 
@@ -94,80 +97,84 @@ class HomeFragment : Fragment() {
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.areaState.collect { state ->
-                when (state) {
-                    is AreaState.Available -> {
-                        // we removed the area subtitle from home to match mockup
+            viewLifecycleOwner.repeatOnLifecycle(androidx.lifecycle.Lifecycle.State.STARTED) {
+                viewModel.areaState.collect { state ->
+                    when (state) {
+                        is AreaState.Available -> {
+                            // we removed the area subtitle from home to match mockup
+                        }
+                        is AreaState.UnsupportedLocation -> {
+                            Toast.makeText(requireContext(), "Unsupported Area", Toast.LENGTH_SHORT).show()
+                        }
+                        is AreaState.PermissionRequired -> {
+                            Toast.makeText(requireContext(), "Permission Required", Toast.LENGTH_SHORT).show()
+                        }
+                        is AreaState.LocationDisabled -> {
+                            Toast.makeText(requireContext(), "Location Disabled", Toast.LENGTH_SHORT).show()
+                        }
+                        is AreaState.Error -> {
+                            Toast.makeText(requireContext(), "Error finding location", Toast.LENGTH_SHORT).show()
+                        }
+                        else -> {}
                     }
-                    is AreaState.UnsupportedLocation -> {
-                        Toast.makeText(requireContext(), "Unsupported Area", Toast.LENGTH_SHORT).show()
-                    }
-                    is AreaState.PermissionRequired -> {
-                        Toast.makeText(requireContext(), "Permission Required", Toast.LENGTH_SHORT).show()
-                    }
-                    is AreaState.LocationDisabled -> {
-                        Toast.makeText(requireContext(), "Location Disabled", Toast.LENGTH_SHORT).show()
-                    }
-                    is AreaState.Error -> {
-                        Toast.makeText(requireContext(), "Error finding location", Toast.LENGTH_SHORT).show()
-                    }
-                    else -> {}
                 }
             }
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.uiState.collect { state ->
-                when (state) {
-                    is HomeUiState.Loading -> {
-                        binding.progressBar.visibility = View.VISIBLE
-                        binding.rvReports.visibility = View.GONE
-                        binding.emptyContainer.visibility = View.GONE
-                        binding.guestContainer.visibility = View.GONE
-                    }
-                    is HomeUiState.Success -> {
-                        binding.progressBar.visibility = View.GONE
-                        binding.rvReports.visibility = View.VISIBLE
-                        binding.emptyContainer.visibility = View.GONE
-                        binding.guestContainer.visibility = View.GONE
-                        applyFiltersAndSubmit(state.reports)
-                    }
-                    is HomeUiState.Empty -> {
-                        binding.progressBar.visibility = View.GONE
-                        binding.rvReports.visibility = View.GONE
-                        binding.emptyContainer.visibility = View.VISIBLE
-                        binding.guestContainer.visibility = View.GONE
-                        binding.tvEmptyMessage.text = "No reports found in your area yet."
-                    }
-                    is HomeUiState.PermissionRequired -> {
-                        binding.progressBar.visibility = View.GONE
-                        binding.rvReports.visibility = View.GONE
-                        binding.emptyContainer.visibility = View.GONE
-                        binding.guestContainer.visibility = View.VISIBLE
-                        binding.tvEmptyMessage.text = "Permission Required"
-                        binding.btnGuestLogin.text = "Open Settings"
-                    }
-                    is HomeUiState.LocationDisabled -> {
-                        binding.progressBar.visibility = View.GONE
-                        binding.rvReports.visibility = View.GONE
-                        binding.emptyContainer.visibility = View.GONE
-                        binding.guestContainer.visibility = View.VISIBLE
-                        binding.tvEmptyMessage.text = "Location Disabled"
-                        binding.btnGuestLogin.text = "Enable Location"
-                    }
-                    is HomeUiState.UnsupportedArea -> {
-                        binding.progressBar.visibility = View.GONE
-                        binding.rvReports.visibility = View.GONE
-                        binding.emptyContainer.visibility = View.VISIBLE
-                        binding.guestContainer.visibility = View.GONE
-                        binding.tvEmptyMessage.text = "Your current location is outside supported areas."
-                    }
-                    is HomeUiState.Error -> {
-                        binding.progressBar.visibility = View.GONE
-                        binding.rvReports.visibility = View.GONE
-                        binding.emptyContainer.visibility = View.VISIBLE
-                        binding.guestContainer.visibility = View.GONE
-                        binding.tvEmptyMessage.text = "Error: ${state.message}"
+            viewLifecycleOwner.repeatOnLifecycle(androidx.lifecycle.Lifecycle.State.STARTED) {
+                viewModel.uiState.collect { state ->
+                    when (state) {
+                        is HomeUiState.Loading -> {
+                            binding.progressBar.visibility = View.VISIBLE
+                            binding.rvReports.visibility = View.GONE
+                            binding.emptyContainer.visibility = View.GONE
+                            binding.guestContainer.visibility = View.GONE
+                        }
+                        is HomeUiState.Success -> {
+                            binding.progressBar.visibility = View.GONE
+                            binding.rvReports.visibility = View.VISIBLE
+                            binding.emptyContainer.visibility = View.GONE
+                            binding.guestContainer.visibility = View.GONE
+                            applyFiltersAndSubmit(state.reports)
+                        }
+                        is HomeUiState.Empty -> {
+                            binding.progressBar.visibility = View.GONE
+                            binding.rvReports.visibility = View.GONE
+                            binding.emptyContainer.visibility = View.VISIBLE
+                            binding.guestContainer.visibility = View.GONE
+                            binding.tvEmptyMessage.text = "No reports found in your area yet."
+                        }
+                        is HomeUiState.PermissionRequired -> {
+                            binding.progressBar.visibility = View.GONE
+                            binding.rvReports.visibility = View.GONE
+                            binding.emptyContainer.visibility = View.GONE
+                            binding.guestContainer.visibility = View.VISIBLE
+                            binding.tvEmptyMessage.text = "Permission Required"
+                            binding.btnGuestLogin.text = "Open Settings"
+                        }
+                        is HomeUiState.LocationDisabled -> {
+                            binding.progressBar.visibility = View.GONE
+                            binding.rvReports.visibility = View.GONE
+                            binding.emptyContainer.visibility = View.GONE
+                            binding.guestContainer.visibility = View.VISIBLE
+                            binding.tvEmptyMessage.text = "Location Disabled"
+                            binding.btnGuestLogin.text = "Enable Location"
+                        }
+                        is HomeUiState.UnsupportedArea -> {
+                            binding.progressBar.visibility = View.GONE
+                            binding.rvReports.visibility = View.GONE
+                            binding.emptyContainer.visibility = View.VISIBLE
+                            binding.guestContainer.visibility = View.GONE
+                            binding.tvEmptyMessage.text = "Your current location is outside supported areas."
+                        }
+                        is HomeUiState.Error -> {
+                            binding.progressBar.visibility = View.GONE
+                            binding.rvReports.visibility = View.GONE
+                            binding.emptyContainer.visibility = View.VISIBLE
+                            binding.guestContainer.visibility = View.GONE
+                            binding.tvEmptyMessage.text = "Error: ${state.message}"
+                        }
                     }
                 }
             }
@@ -190,8 +197,10 @@ class HomeFragment : Fragment() {
                 startActivity(intent)
             },
             onUpvoteClick = { reportId ->
-                val viewModel = ViewModelProvider(this)[HomeViewModel::class.java]
-                viewModel.toggleUpvote(reportId)
+                requireContext().requireAuthenticatedUser {
+                    val viewModel = ViewModelProvider(this)[HomeViewModel::class.java]
+                    viewModel.toggleUpvote(reportId)
+                }
             }
         )
         binding.rvReports.adapter = reportAdapter

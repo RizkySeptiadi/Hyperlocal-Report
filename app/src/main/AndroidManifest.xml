@@ -37,6 +37,11 @@
             android:name=".ui.report.CameraActivity"
             android:exported="false"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
+            
+        <activity
+            android:name=".ui.report.MapSelectionActivity"
+            android:exported="false"
+            android:label="Pilih Lokasi" />
 
         <activity
             android:name=".ui.auth.SplashActivity"

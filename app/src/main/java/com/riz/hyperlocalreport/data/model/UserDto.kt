@@ -11,6 +11,7 @@ data class UserDto(
     val role: String = "",
     val areaId: String = "",
     val fcmToken: String? = null,
+    val profileImageUrl: String? = null,
     val createdAt: Timestamp? = null
 )
 
@@ -22,5 +23,6 @@ fun UserDto.toDomain() = User(
     role = role,
     areaId = areaId,
     fcmToken = fcmToken,
+    profileImageUrl = profileImageUrl,
     createdAt = createdAt?.toDate()
 )

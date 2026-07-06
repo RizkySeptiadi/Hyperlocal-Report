@@ -58,14 +58,18 @@ class ReportDetailActivity : AppCompatActivity() {
         }
 
         binding.btnUpvote.setOnClickListener {
-            viewModel.toggleUpvote()
+            this.requireAuthenticatedUser {
+                viewModel.toggleUpvote()
+            }
         }
 
         binding.btnSendComment.setOnClickListener {
-            val content = binding.etComment.text.toString().trim()
-            if (content.isNotEmpty()) {
-                viewModel.addComment(content)
-                binding.etComment.text?.clear()
+            this.requireAuthenticatedUser {
+                val content = binding.etComment.text.toString().trim()
+                if (content.isNotEmpty()) {
+                    viewModel.addComment(content)
+                    binding.etComment.text?.clear()
+                }
             }
         }
         

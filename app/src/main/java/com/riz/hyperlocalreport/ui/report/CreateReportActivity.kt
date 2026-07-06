@@ -24,9 +24,6 @@ import com.riz.hyperlocalreport.databinding.ActivityCreateReportBinding
 import kotlinx.coroutines.launch
 import org.osmdroid.config.Configuration
 import org.osmdroid.util.GeoPoint
-import org.osmdroid.views.overlay.Marker
-import org.osmdroid.events.MapEventsReceiver
-import org.osmdroid.views.overlay.MapEventsOverlay
 import com.bumptech.glide.Glide
 
 class CreateReportActivity : AppCompatActivity() {
@@ -39,7 +36,6 @@ class CreateReportActivity : AppCompatActivity() {
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private var currentLocation: GeoPoint? = null
-    private var marker: Marker? = null
     private var photoUri: String? = null
 
     private val cameraPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
@@ -70,6 +66,17 @@ class CreateReportActivity : AppCompatActivity() {
             }
         }
     }
+    
+    private val mapSelectionLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val lat = result.data?.getDoubleExtra(MapSelectionActivity.EXTRA_LATITUDE, 0.0) ?: 0.0
+            val lng = result.data?.getDoubleExtra(MapSelectionActivity.EXTRA_LONGITUDE, 0.0) ?: 0.0
+            if (lat != 0.0 && lng != 0.0) {
+                currentLocation = GeoPoint(lat, lng)
+                updateLocationText(lat, lng)
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -85,7 +92,6 @@ class CreateReportActivity : AppCompatActivity() {
 
         setupToolbar()
         setupCategoryDropdown()
-        setupMap()
         setupListeners()
         observeViewModel()
         
@@ -109,31 +115,10 @@ class CreateReportActivity : AppCompatActivity() {
         binding.actvCategory.setAdapter(adapter)
     }
 
-    private fun setupMap() {
-        binding.mapView.setMultiTouchControls(true)
-        binding.mapView.controller.setZoom(17.0)
-
-        val mapEventsReceiver = object : MapEventsReceiver {
-            override fun singleTapConfirmedHelper(p: GeoPoint?): Boolean {
-                p?.let { updateMarkerLocation(it) }
-                return true
-            }
-            override fun longPressHelper(p: GeoPoint?): Boolean = false
-        }
-        val mapEventsOverlay = MapEventsOverlay(mapEventsReceiver)
-        binding.mapView.overlays.add(mapEventsOverlay)
-    }
-
-    private fun updateMarkerLocation(geoPoint: GeoPoint) {
-        currentLocation = geoPoint
-        if (marker == null) {
-            marker = Marker(binding.mapView).apply {
-                setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
-            }
-            binding.mapView.overlays.add(marker)
-        }
-        marker?.position = geoPoint
-        binding.mapView.invalidate()
+    private fun updateLocationText(lat: Double, lng: Double) {
+        val latStr = String.format("%.5f", lat)
+        val lngStr = String.format("%.5f", lng)
+        binding.tvLocation.text = "Lokasi: $latStr, $lngStr"
     }
 
     private fun setupListeners() {
@@ -145,6 +130,15 @@ class CreateReportActivity : AppCompatActivity() {
                     cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
                 }
             }
+        }
+        
+        binding.btnChangeLocation.setOnClickListener {
+            val intent = Intent(this, MapSelectionActivity::class.java)
+            currentLocation?.let {
+                intent.putExtra(MapSelectionActivity.EXTRA_LATITUDE, it.latitude)
+                intent.putExtra(MapSelectionActivity.EXTRA_LONGITUDE, it.longitude)
+            }
+            mapSelectionLauncher.launch(intent)
         }
 
         binding.btnSubmit.setOnClickListener {
@@ -211,14 +205,16 @@ class CreateReportActivity : AppCompatActivity() {
     private fun getCurrentLocation() {
         try {
             fusedLocationClient.lastLocation.addOnSuccessListener { location ->
-                location?.let {
-                    val geoPoint = GeoPoint(it.latitude, it.longitude)
-                    binding.mapView.controller.setCenter(geoPoint)
-                    updateMarkerLocation(geoPoint)
+                if (location != null && currentLocation == null) { // Only set if not already set by map picker
+                    val geoPoint = GeoPoint(location.latitude, location.longitude)
+                    currentLocation = geoPoint
+                    updateLocationText(location.latitude, location.longitude)
+                } else if (currentLocation == null) {
+                    binding.tvLocation.text = "Lokasi tidak ditemukan. Harap pilih di peta."
                 }
             }
         } catch (e: SecurityException) {
-            // Ignored, should be handled by permission check
+            binding.tvLocation.text = "Izin lokasi ditolak. Harap pilih di peta."
         }
     }
 
@@ -254,16 +250,6 @@ class CreateReportActivity : AppCompatActivity() {
         binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
         binding.btnSubmit.isEnabled = !isLoading
         binding.btnTakePhoto.isEnabled = !isLoading
-        binding.mapView.isEnabled = !isLoading
-    }
-    
-    override fun onResume() {
-        super.onResume()
-        binding.mapView.onResume()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        binding.mapView.onPause()
+        binding.btnChangeLocation.isEnabled = !isLoading
     }
 }

@@ -81,6 +81,7 @@ class FirebaseAuthRepository(
                     role = Constants.Roles.WARGA,
                     areaId = areaId,
                     fcmToken = token,
+                    profileImageUrl = null,
                     createdAt = Date() // Approximate for local state until reload
                 )
                 Result.success(Unit)
@@ -172,6 +173,28 @@ class FirebaseAuthRepository(
             val profile = finalSnapshot.toObject(UserDto::class.java)
             _currentUser.value = profile?.toDomain()
             if (profile != null) Result.success(Unit) else Result.failure(Exception("Profile not found"))
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun uploadProfilePicture(uri: android.net.Uri): Result<String> {
+        return try {
+            val user = auth.currentUser ?: return Result.failure(Exception("Not authenticated"))
+            val storageRef = com.google.firebase.storage.FirebaseStorage.getInstance().reference
+            val profileRef = storageRef.child("profile_pictures/${user.uid}.jpg")
+            
+            profileRef.putFile(uri).await()
+            val downloadUrl = profileRef.downloadUrl.await().toString()
+            
+            firestore.collection(Constants.Collections.USERS).document(user.uid)
+                .update("profileImageUrl", downloadUrl).await()
+                
+            val profileSnapshot = firestore.collection(Constants.Collections.USERS).document(user.uid).get().await()
+            val profile = profileSnapshot.toObject(UserDto::class.java)
+            _currentUser.value = profile?.toDomain()
+            
+            Result.success(downloadUrl)
         } catch (e: Exception) {
             Result.failure(e)
         }

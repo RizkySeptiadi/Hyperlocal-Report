@@ -11,6 +11,8 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.riz.hyperlocalreport.core.common.Constants
 import com.riz.hyperlocalreport.databinding.ActivityMainBinding
+import kotlinx.coroutines.launch
+import androidx.lifecycle.lifecycleScope
 
 class MainActivity : AppCompatActivity() {
 
@@ -38,8 +40,19 @@ class MainActivity : AppCompatActivity() {
 
         binding.bottomNavigation.setupWithNavController(navController)
         
-        // Default resident mode
-        setupMenuForRole(Constants.Roles.WARGA)
+        // Observe user role to setup correct menu
+        val appContainer = (application as HyperLocalReportApp).container
+        var currentRole: String? = null
+        
+        lifecycleScope.launch {
+            appContainer.authRepository.currentUser.collect { user ->
+                val role = user?.role ?: Constants.Roles.WARGA
+                if (currentRole != role) {
+                    currentRole = role
+                    setupMenuForRole(role)
+                }
+            }
+        }
 
         checkAndRequestLocationPermission()
     }

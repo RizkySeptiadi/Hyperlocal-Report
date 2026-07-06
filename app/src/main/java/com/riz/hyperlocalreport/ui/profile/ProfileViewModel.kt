@@ -29,6 +29,18 @@ class ProfileViewModel(
             }
         }
     }
+
+    fun uploadProfilePicture(uri: android.net.Uri) {
+        viewModelScope.launch {
+            _updateState.value = ProfileUpdateState.Loading
+            val result = authRepository.uploadProfilePicture(uri)
+            if (result.isSuccess) {
+                _updateState.value = ProfileUpdateState.Success
+            } else {
+                _updateState.value = ProfileUpdateState.Error(result.exceptionOrNull()?.message ?: "Failed to upload picture")
+            }
+        }
+    }
     
     fun resetUpdateState() {
         _updateState.value = ProfileUpdateState.Idle

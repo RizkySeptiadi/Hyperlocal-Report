@@ -11,4 +11,5 @@ interface AuthRepository {
     suspend fun checkSession(): Boolean
     suspend fun googleSignIn(idToken: String): Result<Unit>
     suspend fun updateProfile(name: String, phone: String): Result<Unit>
+    suspend fun uploadProfilePicture(uri: android.net.Uri): Result<String>
 }

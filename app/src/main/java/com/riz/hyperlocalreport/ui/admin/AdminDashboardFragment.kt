@@ -77,8 +77,8 @@ class AdminDashboardFragment : Fragment() {
                         binding.emptyContainer.visibility = View.VISIBLE
                         binding.tvEmptyMessage.text = "Belum ada laporan di area ini."
                         
-                        binding.tvCountTotal.text = "0"
                         binding.tvCountNew.text = "0"
+                        binding.tvCountVerified.text = "0"
                         binding.tvCountProcessing.text = "0"
                         binding.tvCountDone.text = "0"
                     }
@@ -94,13 +94,13 @@ class AdminDashboardFragment : Fragment() {
     }
     
     private fun updateSummaryCards(reports: List<com.riz.hyperlocalreport.domain.model.ReportUiModel>) {
-        val total = reports.size
         val baru = reports.count { it.report.status == com.riz.hyperlocalreport.core.common.Constants.ReportStatus.NEW }
+        val terverifikasi = reports.count { it.report.status == com.riz.hyperlocalreport.core.common.Constants.ReportStatus.VERIFIED }
         val proses = reports.count { it.report.status == com.riz.hyperlocalreport.core.common.Constants.ReportStatus.PROCESSING }
         val selesai = reports.count { it.report.status == com.riz.hyperlocalreport.core.common.Constants.ReportStatus.DONE }
         
-        binding.tvCountTotal.text = total.toString()
         binding.tvCountNew.text = baru.toString()
+        binding.tvCountVerified.text = terverifikasi.toString()
         binding.tvCountProcessing.text = proses.toString()
         binding.tvCountDone.text = selesai.toString()
     }

@@ -52,9 +52,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Tinjauan Laporan"
-                android:textSize="16sp"
+                android:textSize="18sp"
                 android:textStyle="bold"
-                android:textColor="?android:textColorPrimary"
+                android:textColor="?android:textColorPrimary"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Pantau dan kelola aduan masyarakat terkini."
+                android:textSize="14sp"
+                android:textColor="#757575"
+                android:layout_marginTop="4dp"
                 android:layout_marginBottom="16dp"/>
 
             <!-- 2x2 Grid -->
@@ -65,7 +73,7 @@
                 android:rowCount="2"
                 android:layout_marginBottom="8dp">
 
-                <!-- Total Laporan -->
+                <!-- Baru -->
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -73,38 +81,81 @@
                     android:layout_marginEnd="8dp"
                     android:layout_marginBottom="12dp"
                     app:cardElevation="0dp"
-                    app:strokeColor="#E0E0E0"
+                    app:strokeColor="#E3F2FD"
+                    app:cardBackgroundColor="#F4F8FE"
                     app:strokeWidth="1dp"
-                    app:cardCornerRadius="12dp">
-                    <LinearLayout
+                    app:cardCornerRadius="12dp"
+                    android:clipChildren="true">
+                    
+                    <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
                         android:padding="16dp">
+
                         <ImageView
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
+                            android:layout_width="80dp"
+                            android:layout_height="80dp"
                             android:src="@android:drawable/ic_menu_agenda"
-                            app:tint="#757575"/>
-                        <TextView
-                            android:id="@+id/tv_count_total"
+                            app:tint="#DDE8F9"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            android:layout_marginEnd="-16dp" />
+
+                        <LinearLayout
+                            android:id="@+id/ll_header_baru"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
-                            android:text="0"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="NEW"
+                                android:background="@drawable/bg_status_pill"
+                                android:backgroundTint="#1565C0"
+                                android:textColor="@android:color/white"
+                                android:textSize="8sp"
+                                android:textStyle="bold"
+                                android:paddingHorizontal="4dp"
+                                android:paddingVertical="2dp"
+                                android:layout_marginEnd="6dp"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Baru"
+                                android:textSize="14sp"
+                                android:textColor="#424242"
+                                android:textStyle="bold"/>
+                        </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/tv_count_new"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="12dp"
+                            android:text="42"
                             android:textSize="24sp"
+                            android:textColor="#1976D2"
                             android:textStyle="bold"
-                            android:textColor="?android:textColorPrimary"/>
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/ll_header_baru"/>
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Total Laporan"
+                            android:layout_marginTop="4dp"
+                            android:text="+12 hari ini"
                             android:textSize="12sp"
-                            android:textColor="#757575"/>
-                    </LinearLayout>
+                            android:textColor="#546E7A"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/tv_count_new"/>
+                    </androidx.constraintlayout.widget.ConstraintLayout>
                 </com.google.android.material.card.MaterialCardView>
 
-                <!-- Laporan Baru -->
+                <!-- Terverifikasi -->
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -112,39 +163,75 @@
                     android:layout_marginStart="8dp"
                     android:layout_marginBottom="12dp"
                     app:cardElevation="0dp"
-                    app:strokeColor="#FFCDD2"
-                    app:cardBackgroundColor="#FFEBEE"
+                    app:strokeColor="#E8F5E9"
+                    app:cardBackgroundColor="#F1F8F1"
                     app:strokeWidth="1dp"
-                    app:cardCornerRadius="12dp">
-                    <LinearLayout
+                    app:cardCornerRadius="12dp"
+                    android:clipChildren="true">
+                    
+                    <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
                         android:padding="16dp">
+
                         <ImageView
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:src="@android:drawable/ic_menu_info_details"
-                            app:tint="#D32F2F"/>
-                        <TextView
-                            android:id="@+id/tv_count_new"
+                            android:layout_width="80dp"
+                            android:layout_height="80dp"
+                            android:src="@android:drawable/checkbox_on_background"
+                            app:tint="#DDF0DD"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            android:layout_marginEnd="-16dp" />
+
+                        <LinearLayout
+                            android:id="@+id/ll_header_terverifikasi"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
-                            android:text="0"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent">
+                            <ImageView
+                                android:layout_width="16dp"
+                                android:layout_height="16dp"
+                                android:src="@android:drawable/checkbox_on_background"
+                                app:tint="#2E7D32"
+                                android:layout_marginEnd="6dp"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Terverifikasi"
+                                android:textSize="14sp"
+                                android:textColor="#424242"
+                                android:textStyle="bold"/>
+                        </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/tv_count_verified"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="12dp"
+                            android:text="18"
                             android:textSize="24sp"
+                            android:textColor="#2E7D32"
                             android:textStyle="bold"
-                            android:textColor="#D32F2F"/>
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/ll_header_terverifikasi"/>
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Laporan Baru"
+                            android:layout_marginTop="4dp"
+                            android:text="+5 hari ini"
                             android:textSize="12sp"
-                            android:textColor="#D32F2F"/>
-                    </LinearLayout>
+                            android:textColor="#455A64"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/tv_count_verified"/>
+                    </androidx.constraintlayout.widget.ConstraintLayout>
                 </com.google.android.material.card.MaterialCardView>
 
-                <!-- Sedang Diproses -->
+                <!-- Diproses -->
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -152,36 +239,72 @@
                     android:layout_marginEnd="8dp"
                     android:layout_marginBottom="12dp"
                     app:cardElevation="0dp"
-                    app:strokeColor="#BBDEFB"
-                    app:cardBackgroundColor="#E3F2FD"
+                    app:strokeColor="#FFF3E0"
+                    app:cardBackgroundColor="#FEF7F0"
                     app:strokeWidth="1dp"
-                    app:cardCornerRadius="12dp">
-                    <LinearLayout
+                    app:cardCornerRadius="12dp"
+                    android:clipChildren="true">
+                    
+                    <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
                         android:padding="16dp">
+
                         <ImageView
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
+                            android:layout_width="80dp"
+                            android:layout_height="80dp"
                             android:src="@android:drawable/ic_popup_sync"
-                            app:tint="#1976D2"/>
+                            app:tint="#F7E6D4"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            android:layout_marginEnd="-16dp" />
+
+                        <LinearLayout
+                            android:id="@+id/ll_header_diproses"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent">
+                            <ImageView
+                                android:layout_width="16dp"
+                                android:layout_height="16dp"
+                                android:src="@android:drawable/ic_popup_sync"
+                                app:tint="#E65100"
+                                android:layout_marginEnd="6dp"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Diproses"
+                                android:textSize="14sp"
+                                android:textColor="#424242"
+                                android:textStyle="bold"/>
+                        </LinearLayout>
+
                         <TextView
                             android:id="@+id/tv_count_processing"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
-                            android:text="0"
+                            android:layout_marginTop="12dp"
+                            android:text="24"
                             android:textSize="24sp"
+                            android:textColor="#E65100"
                             android:textStyle="bold"
-                            android:textColor="#1976D2"/>
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/ll_header_diproses"/>
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Sedang Diproses"
+                            android:layout_marginTop="4dp"
+                            android:text="+2 hari ini"
                             android:textSize="12sp"
-                            android:textColor="#1976D2"/>
-                    </LinearLayout>
+                            android:textColor="#5D4037"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/tv_count_processing"/>
+                    </androidx.constraintlayout.widget.ConstraintLayout>
                 </com.google.android.material.card.MaterialCardView>
 
                 <!-- Selesai -->
@@ -192,36 +315,72 @@
                     android:layout_marginStart="8dp"
                     android:layout_marginBottom="12dp"
                     app:cardElevation="0dp"
-                    app:strokeColor="#C8E6C9"
-                    app:cardBackgroundColor="#E8F5E9"
+                    app:strokeColor="#EEEEEE"
+                    app:cardBackgroundColor="#F5F5F5"
                     app:strokeWidth="1dp"
-                    app:cardCornerRadius="12dp">
-                    <LinearLayout
+                    app:cardCornerRadius="12dp"
+                    android:clipChildren="true">
+                    
+                    <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
                         android:padding="16dp">
+
                         <ImageView
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
+                            android:layout_width="80dp"
+                            android:layout_height="80dp"
                             android:src="@android:drawable/checkbox_on_background"
-                            app:tint="#388E3C"/>
+                            app:tint="#E0E0E0"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            android:layout_marginEnd="-16dp" />
+
+                        <LinearLayout
+                            android:id="@+id/ll_header_selesai"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent">
+                            <ImageView
+                                android:layout_width="16dp"
+                                android:layout_height="16dp"
+                                android:src="@android:drawable/checkbox_on_background"
+                                app:tint="#424242"
+                                android:layout_marginEnd="6dp"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Selesai"
+                                android:textSize="14sp"
+                                android:textColor="#424242"
+                                android:textStyle="bold"/>
+                        </LinearLayout>
+
                         <TextView
                             android:id="@+id/tv_count_done"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
-                            android:text="0"
+                            android:layout_marginTop="12dp"
+                            android:text="156"
                             android:textSize="24sp"
+                            android:textColor="#424242"
                             android:textStyle="bold"
-                            android:textColor="#388E3C"/>
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/ll_header_selesai"/>
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Selesai"
+                            android:layout_marginTop="4dp"
+                            android:text="+8 hari ini"
                             android:textSize="12sp"
-                            android:textColor="#388E3C"/>
-                    </LinearLayout>
+                            android:textColor="#616161"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/tv_count_done"/>
+                    </androidx.constraintlayout.widget.ConstraintLayout>
                 </com.google.android.material.card.MaterialCardView>
             </GridLayout>
         </LinearLayout>
