@@ -42,23 +42,23 @@ class AdminDashboardViewModel(
         viewModelScope.launch {
             authRepository.currentUser.collectLatest { user ->
                 _currentUser.value = user
-                if (user != null && user.areaId.isNotEmpty()) {
-                    loadReportsForArea(user.areaId, user.userId)
+                if (user != null) {
+                    loadReports(user.userId)
                 } else {
-                    _uiState.value = AdminDashboardUiState.Error("No Area ID assigned to this admin account.")
+                    _uiState.value = AdminDashboardUiState.Error("User not logged in.")
                 }
             }
         }
     }
 
-    private fun loadReportsForArea(areaId: String, userId: String) {
+    private fun loadReports(userId: String) {
         reportJob?.cancel()
         _uiState.value = AdminDashboardUiState.Loading
         reportJob = viewModelScope.launch {
             val userUpvotesFlow = upvoteRepository.observeUserUpvotes(userId)
 
             combine(
-                reportRepository.observeReportsByArea(areaId).catch { e -> _uiState.value = AdminDashboardUiState.Error(e.message ?: "Unknown error") },
+                reportRepository.observeAllReports().catch { e -> _uiState.value = AdminDashboardUiState.Error(e.message ?: "Unknown error") },
                 userUpvotesFlow,
                 _upvotingIds
             ) { reports, upvotedIds, upvotingIds ->

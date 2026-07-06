@@ -52,9 +52,7 @@ class HomeViewModel(
         viewModelScope.launch {
             areaSessionManager.areaState.collectLatest { state ->
                 when (state) {
-                    is AreaState.Available -> {
-                        loadReportsForArea(state.area.areaId)
-                    }
+                    is AreaState.Available -> loadReports()
                     is AreaState.PermissionRequired -> _uiState.value = HomeUiState.PermissionRequired
                     is AreaState.LocationDisabled -> _uiState.value = HomeUiState.LocationDisabled
                     is AreaState.LoadingLocation, is AreaState.ResolvingArea -> _uiState.value = HomeUiState.Loading
@@ -66,7 +64,7 @@ class HomeViewModel(
         }
     }
 
-    private fun loadReportsForArea(areaId: String) {
+    private fun loadReports() {
         reportJob?.cancel()
         _uiState.value = HomeUiState.Loading
         reportJob = viewModelScope.launch {
@@ -79,7 +77,7 @@ class HomeViewModel(
             }
 
             combine(
-                reportRepository.observeReportsByArea(areaId).catch { e -> _uiState.value = HomeUiState.Error(e.message ?: "Unknown error") },
+                reportRepository.observeAllReports().catch { e -> _uiState.value = HomeUiState.Error(e.message ?: "Unknown error") },
                 userUpvotesFlow,
                 _upvotingIds
             ) { reports, upvotedIds, upvotingIds ->

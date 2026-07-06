@@ -26,16 +26,8 @@ class MapViewModel(
     val reportsState: StateFlow<UiState<List<Report>>> = areaSessionManager.areaState
         .flatMapLatest { state ->
             when (state) {
-                is AreaState.Available -> {
-                    reportRepository.observeReportsByArea(state.area.areaId)
-                        .map<List<Report>, UiState<List<Report>>> { reports -> 
-                            if (reports.isEmpty()) UiState.Empty
-                            else UiState.Success(reports) 
-                        }
-                        .catch { e -> emit(UiState.Error(e.message ?: "Failed to load reports")) }
-                }
-                is AreaState.UnsupportedLocation -> {
-                    reportRepository.observeReportsByArea(state.addressName) // Use addressName as fallback areaId
+                is AreaState.Available, is AreaState.UnsupportedLocation -> {
+                    reportRepository.observeAllReports()
                         .map<List<Report>, UiState<List<Report>>> { reports -> 
                             if (reports.isEmpty()) UiState.Empty
                             else UiState.Success(reports) 

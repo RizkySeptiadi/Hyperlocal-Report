@@ -18,10 +18,8 @@ class FirestoreReportRepository(
     private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
 ) : ReportRepository {
 
-    override fun observeReportsByArea(areaId: String): Flow<List<Report>> = callbackFlow {
+    override fun observeAllReports(): Flow<List<Report>> = callbackFlow {
         val listener = firestore.collection(Constants.Collections.REPORTS)
-            .whereEqualTo("areaId", areaId)
-            // Removed orderBy("createdAt") to avoid requiring a manual Firestore Composite Index
             .addSnapshotListener { snapshot, error ->
                 if (error != null) {
                     trySend(emptyList())
